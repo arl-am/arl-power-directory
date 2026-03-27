@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARL Power Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg:          #f4f6fb;
+      --surface:     #ffffff;
+      --card:        #ffffff;
+      --sidebar-bg:  #ffffff;
+      --hover:       #f0f4ff;
+      --muted:       #f4f6fb;
+      --fg:          #111827;
+      --fg-2:        #6b7280;
+      --fg-3:        #9ca3af;
+      --border:      #e5e7eb;
+      --border-lt:   #f0f2f5;
+      --primary:     #2563eb;
+      --primary-lt:  #eff6ff;
+      --primary-hv:  #1d4ed8;
+      --app-c:       #2563eb;
+      --app-bg:      #eff6ff;
+      --app-bd:      #bfdbfe;
+      --bi-c:        #d97706;
+      --bi-bg:       #fffbeb;
+      --bi-bd:       #fde68a;
+      --red:         #dc2626;
+      --red-lt:      #fef2f2;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.07);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.10);
+      --sidebar-w:   242px;
+      --header-h:    56px;
+      --radius:      10px;
+      --ease:        .16s cubic-bezier(.4,0,.2,1);
+    }
+    [data-theme="dark"] {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --card:        #1c2230;
+      --sidebar-bg:  #13181f;
+      --hover:       #1f2937;
+      --muted:       #1c2230;
+      --fg:          #e6edf3;
+      --fg-2:        #8b949e;
+      --fg-3:        #6e7681;
+      --border:      #30363d;
+      --border-lt:   #21262d;
+      --primary:     #3b82f6;
+      --primary-lt:  rgba(59,130,246,.12);
+      --primary-hv:  #2563eb;
+      --app-c:       #60a5fa;
+      --app-bg:      rgba(96,165,250,.1);
+      --app-bd:      rgba(96,165,250,.25);
+      --bi-c:        #fbbf24;
+      --bi-bg:       rgba(251,191,36,.08);
+      --bi-bd:       rgba(251,191,36,.25);
+      --red:         #f87171;
+      --red-lt:      rgba(248,113,113,.1);
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.4);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 14px; line-height: 1.6;
+      background: var(--bg); color: var(--fg);
+      height: 100vh; overflow: hidden;
+      transition: background var(--ease), color var(--ease);
+    }
+    button { cursor: pointer; font-family: inherit; }
+    input, textarea, select { font-family: inherit; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── SHELL ── */
+    #app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ════════════════════════════════
+       HEADER
+    ════════════════════════════════ */
+    #header {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr auto;
+      align-items: center;
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      z-index: 40;
+      padding-right: 20px;
+      transition: background var(--ease), border-color var(--ease);
+    }
+    .h-brand {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 20px; height: 100%;
+      border-right: 1px solid var(--border);
+    }
+    .h-brand-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .h-brand-icon svg { width: 18px; height: 18px; color: #fff; }
+    .h-brand-name { font-size: 15px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+    .h-center { display: flex; justify-content: center; }
+    .h-logo img { height: 30px; object-fit: contain; }
+    .h-right { display: flex; align-items: center; }
+    .theme-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--muted);
+      color: var(--fg-2); display: flex; align-items: center; justify-content: center;
+      transition: all var(--ease);
+    }
+    .theme-btn:hover { background: var(--primary-lt); color: var(--primary); border-color: var(--app-bd); }
+    .theme-btn svg { width: 15px; height: 15px; }
+    .theme-btn .i-sun  { display: none; }
+    .theme-btn .i-moon { display: block; }
+    [data-theme="dark"] .theme-btn .i-sun  { display: block; }
+    [data-theme="dark"] .theme-btn .i-moon { display: none; }
+
+    /* ════════════════════════════════
+       BODY ROW
+    ════════════════════════════════ */
+    #body-row { display: flex; flex: 1; overflow: hidden; }
+
+    /* ════════════════════════════════
+       SIDEBAR
+    ════════════════════════════════ */
+    #sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--sidebar-bg); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
+      transition: background var(--ease), border-color var(--ease);
+    }
+    .sb-top { flex: 1; overflow-y: auto; padding: 16px 12px 8px; }
+    .sb-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 500; color: var(--primary);
+      padding: 6px 8px; border-radius: 7px; margin-bottom: 16px;
+      border: none; background: none; width: 100%; text-align: left;
+      transition: background var(--ease);
+    }
+    .sb-back:hover { background: var(--primary-lt); }
+    .sb-back svg { width: 14px; height: 14px; }
+    .sb-back.hidden { display: none; }
+    .sb-section-lbl {
+      font-size: 10px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--fg-3);
+      padding: 0 8px; margin-bottom: 6px;
+    }
+    .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 10px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 500; color: var(--fg-2);
+      cursor: pointer; border: none; background: none;
+      width: 100%; text-align: left; transition: all var(--ease);
+    }
+    .nav-item:hover { background: var(--hover); color: var(--fg); }
+    .nav-item.active { background: var(--primary-lt); color: var(--primary); font-weight: 600; }
+    .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: .7; }
+    .nav-item.active svg { opacity: 1; }
+    .nav-badge {
+      margin-left: auto; font-size: 11px; font-weight: 600; color: var(--fg-3);
+      background: var(--muted); border: 1px solid var(--border);
+      border-radius: 999px; padding: 0 7px; min-width: 22px; text-align: center;
+      transition: all var(--ease);
+    }
+    .nav-item.active .nav-badge { background: var(--primary-lt); color: var(--primary); border-color: var(--app-bd); }
+    .sb-bottom { border-top: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .user-chip { display: flex; align-items: center; gap: 9px; padding: 6px 8px; }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      color: #fff; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .user-name { font-size: 13px; font-weight: 500; }
+    .settings-btn {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600; color: #fff;
+      background: var(--primary); border: none; width: 100%;
+      cursor: pointer; transition: background var(--ease);
+    }
+    .settings-btn:hover { background: var(--primary-hv); }
+    .settings-btn svg { width: 15px; height: 15px; }
+
+    /* ════════════════════════════════
+       MAIN CONTENT
+    ════════════════════════════════ */
+    #main { flex: 1; overflow-y: auto; padding: 28px 32px 60px; }
+
+    /* ════════════════════════════════
+       PAGE: DIRECTORY
+    ════════════════════════════════ */
+    .hero { margin-bottom: 24px; animation: fadeUp .4s ease both; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-lt); border: 1px solid var(--app-bd);
+      border-radius: 999px; padding: 2px 10px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 10px;
+    }
+    .hero-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+    .hero h1 { font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; letter-spacing: -.025em; margin-bottom: 4px; }
+    .hero p  { font-size: 13.5px; color: var(--fg-2); }
+
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; animation: fadeUp .4s .05s ease both; }
+    .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 340px; }
+    .search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--fg-3); pointer-events: none; width: 15px; height: 15px; }
+    .search-input {
+      width: 100%; height: 36px; border-radius: var(--radius);
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--fg); font-size: 13.5px; padding: 0 11px 0 34px;
+      outline: none; transition: all var(--ease);
+    }
+    .search-input::placeholder { color: var(--fg-3); }
+    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.12); background: var(--card); }
+
+    .filter-pills { display: flex; gap: 5px; }
+    .pill {
+      height: 32px; padding: 0 12px; border-radius: 7px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--fg-2); font-size: 12.5px; font-weight: 500;
+      cursor: pointer; transition: all var(--ease);
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .pill:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-lt); }
+    .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pill.active:hover { background: var(--primary-hv); border-color: var(--primary-hv); }
+    .pill.pill-bi.active { background: var(--bi-c); border-color: var(--bi-c); }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .75; }
+
+    .stats-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 12.5px; animation: fadeUp .4s .08s ease both; }
+    .stat-chip { display: flex; align-items: center; gap: 4px; color: var(--fg-2); }
+    .stat-num  { font-weight: 700; color: var(--fg); }
+    .stat-sep  { width: 1px; height: 12px; background: var(--border); }
+
+    .dept-section { margin-bottom: 30px; animation: fadeUp .35s ease both; }
+    .dept-header  { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .dept-label   { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-3); }
+    .dept-line    { flex: 1; height: 1px; background: var(--border); }
+    .dept-count   { font-size: 10.5px; font-weight: 600; color: var(--fg-3); background: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+
+    /* ── RESOURCE CARD ── */
+    .res-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 18px 14px;
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative; overflow: hidden;
+      text-decoration: none; color: inherit;
+      animation: fadeUp .4s ease both;
+      transition: box-shadow var(--ease), border-color var(--ease), transform var(--ease);
+    }
+    .res-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--card-accent, var(--primary)); opacity: 0; transition: opacity var(--ease); }
+    .res-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .res-card:hover::before { opacity: 1; }
+    .res-card.type-app { --card-accent: var(--app-c); }
+    .res-card.type-app:hover { border-color: var(--app-bd); }
+    .res-card.type-bi  { --card-accent: var(--bi-c);  }
+    .res-card.type-bi:hover  { border-color: var(--bi-bd);  }
+
+    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card-icon.type-app { background: var(--app-bg); border: 1px solid var(--app-bd); color: var(--app-c); }
+    .card-icon.type-bi  { background: var(--bi-bg);  border: 1px solid var(--bi-bd);  color: var(--bi-c);  }
+    .card-icon svg { width: 18px; height: 18px; }
+    .card-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+    .card-badge svg { width: 9px; height: 9px; }
+    .badge-app { background: var(--app-bg); color: var(--app-c); border: 1px solid var(--app-bd); }
+    .badge-bi  { background: var(--bi-bg);  color: var(--bi-c);  border: 1px solid var(--bi-bd);  }
+    .card-body { flex: 1; }
+    .card-name { font-size: 14px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; margin-bottom: 4px; }
+    .card-desc { font-size: 12px; color: var(--fg-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border-lt); gap: 8px; }
+    .card-dept { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--fg-3); min-width: 0; }
+    .card-dept svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .card-dept span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .open-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 26px; padding: 0 10px; border-radius: 6px;
+      font-size: 11.5px; font-weight: 600; border: 1px solid transparent;
+      text-decoration: none; transition: all var(--ease); flex-shrink: 0; cursor: pointer;
+    }
+    .open-btn.type-app { background: var(--app-bg); color: var(--app-c); border-color: var(--app-bd); }
+    .open-btn.type-app:hover { background: var(--app-c); color: #fff; }
+    .open-btn.type-bi  { background: var(--bi-bg);  color: var(--bi-c);  border-color: var(--bi-bd);  }
+    .open-btn.type-bi:hover  { background: var(--bi-c);  color: #fff; }
+    .open-btn svg { width: 10px; height: 10px; }
+
+    .empty-state { grid-column: 1/-1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
+    .empty-icon  { width: 52px; height: 52px; border-radius: 50%; background: var(--muted); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; color: var(--fg-3); }
+    .empty-icon svg { width: 22px; height: 22px; }
+    .empty-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .empty-text  { font-size: 13px; color: var(--fg-2); max-width: 260px; }
+
+    /* ════════════════════════════════
+       PAGE: SETTINGS
+    ════════════════════════════════ */
+    .sett-heading { margin-bottom: 24px; }
+    .sett-heading h1 { font-size: 24px; font-weight: 700; letter-spacing: -.025em; margin-bottom: 2px; }
+    .sett-heading p  { font-size: 13.5px; color: var(--fg-2); }
+
+    .tab-bar { display: flex; gap: 2px; background: var(--muted); border: 1px solid var(--border); border-radius: 9px; padding: 4px; margin-bottom: 24px; width: fit-content; }
+    .tab-btn { padding: 6px 18px; border-radius: 6px; border: none; font-size: 13.5px; font-weight: 500; color: var(--fg-2); background: transparent; cursor: pointer; transition: all var(--ease); }
+    .tab-btn.active { background: var(--surface); color: var(--fg); font-weight: 600; box-shadow: var(--shadow-sm); }
+
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--border); gap: 16px; flex-wrap: wrap; }
+    .panel-title { font-size: 16px; font-weight: 600; }
+    .panel-actions { display: flex; align-items: center; gap: 10px; }
+
+    .s-search {
+      height: 34px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: var(--muted); color: var(--fg); font-size: 13px;
+      padding: 0 10px; outline: none; width: 220px; transition: all var(--ease);
+    }
+    .s-search::placeholder { color: var(--fg-3); }
+    .s-search:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); background: var(--card); }
+
+    .btn-add {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 34px; padding: 0 14px; border-radius: 8px;
+      background: var(--primary); color: #fff; border: none;
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      transition: background var(--ease); white-space: nowrap;
+    }
+    .btn-add:hover { background: var(--primary-hv); }
+    .btn-add svg { width: 14px; height: 14px; }
+
+    .tbl-wrap { padding: 0 20px 20px; }
+    .tbl-head {
+      display: grid; gap: 12px; padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--fg-3);
+    }
+    .tbl-head.cols-res  { grid-template-columns: 2.5fr 1fr 1.2fr 80px; }
+    .tbl-head.cols-dept { grid-template-columns: 1fr 130px 80px; }
+    .tbl-row {
+      display: grid; gap: 12px; padding: 12px;
+      border-bottom: 1px solid var(--border-lt);
+      align-items: center; transition: background var(--ease);
+    }
+    .tbl-row:last-child { border-bottom: none; }
+    .tbl-row:hover { background: var(--hover); border-radius: 8px; }
+    .tbl-row.cols-res  { grid-template-columns: 2.5fr 1fr 1.2fr 80px; }
+    .tbl-row.cols-dept { grid-template-columns: 1fr 130px 80px; }
+
+    .cell-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .cell-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .cell-icon.type-app { background: var(--app-bg); color: var(--app-c); }
+    .cell-icon.type-bi  { background: var(--bi-bg);  color: var(--bi-c);  }
+    .cell-icon svg { width: 16px; height: 16px; }
+    .cell-text { min-width: 0; }
+    .cell-text strong { display: block; font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cell-url { display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--fg-2); }
+    .cell-url a { display: flex; align-items: center; gap: 3px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-2); }
+    .cell-url a:hover { color: var(--primary); }
+    .cell-url svg { width: 10px; height: 10px; flex-shrink: 0; }
+
+    .type-pill { display: inline-flex; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; }
+    .type-pill.type-app { background: var(--app-bg); color: var(--app-c); border: 1px solid var(--app-bd); }
+    .type-pill.type-bi  { background: var(--bi-bg);  color: var(--bi-c);  border: 1px solid var(--bi-bd);  }
+
+    .dept-chip { display: flex; align-items: center; gap: 8px; }
+    .dept-chip-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--primary-lt); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .dept-chip-icon svg { width: 14px; height: 14px; }
+
+    .count-pill { display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 600; color: var(--fg-2); background: var(--muted); border: 1px solid var(--border); }
+
+    .row-actions { display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+    .icon-btn { width: 30px; height: 30px; border-radius: 7px; border: none; background: none; color: var(--fg-3); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--ease); }
+    .icon-btn:hover { background: var(--hover); color: var(--fg); }
+    .icon-btn.del:hover { background: var(--red-lt); color: var(--red); }
+    .icon-btn svg { width: 14px; height: 14px; }
+
+    /* ════════════════════════════════
+       MODAL
+    ════════════════════════════════ */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+    .overlay.open { display: flex; animation: fadeIn .15s ease; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 480px; margin: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.2); max-height: 90vh; overflow-y: auto; animation: slideUp .2s ease; }
+    .modal-sm { max-width: 380px; }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 17px; font-weight: 700; letter-spacing: -.015em; }
+    .modal-close { width: 28px; height: 28px; border-radius: 7px; border: none; background: var(--muted); color: var(--fg-2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--ease); }
+    .modal-close:hover { background: var(--red-lt); color: var(--red); }
+    .modal-close svg { width: 14px; height: 14px; }
+    .modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+    .modal-foot { display: flex; gap: 10px; padding: 16px 22px 20px; border-top: 1px solid var(--border); }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 12.5px; font-weight: 600; }
+    .form-label .req { color: var(--red); margin-left: 2px; }
+    .form-control {
+      width: 100%; border-radius: 8px; border: 1.5px solid var(--border);
+      background: var(--muted); color: var(--fg); font-size: 13.5px;
+      padding: 8px 11px; outline: none; transition: all var(--ease);
+    }
+    .form-control::placeholder { color: var(--fg-3); }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); background: var(--card); }
+    .form-control.invalid { border-color: var(--red); }
+    textarea.form-control { resize: vertical; min-height: 80px; line-height: 1.5; }
+    select.form-control { appearance: none; cursor: pointer; }
+    .form-error { font-size: 11px; color: var(--red); min-height: 14px; }
+
+    .btn-cancel {
+      flex: 1; height: 38px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: none; color: var(--fg-2); font-size: 13.5px; font-weight: 500;
+      cursor: pointer; transition: all var(--ease);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-cancel:hover { background: var(--hover); color: var(--fg); border-color: var(--fg-2); }
+    .btn-save {
+      flex: 1; height: 38px; border-radius: 8px; border: none;
+      background: var(--primary); color: #fff; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background var(--ease);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-save:hover { background: var(--primary-hv); }
+    .btn-cancel svg, .btn-save svg { width: 14px; height: 14px; }
+
+    /* confirm */
+    .confirm-body  { padding: 22px 22px 8px; }
+    .confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .confirm-text  { font-size: 13.5px; color: var(--fg-2); line-height: 1.5; }
+    .confirm-foot  { display: flex; gap: 10px; padding: 16px 22px 20px; }
+    .btn-delete {
+      flex: 1; height: 38px; border-radius: 8px; border: none;
+      background: var(--red); color: #fff; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: opacity var(--ease);
+    }
+    .btn-delete:hover { opacity: .88; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp  { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(.8); } }
+
+    @media (max-width: 680px) {
+      :root { --sidebar-w: 200px; }
+      #main { padding: 18px 16px 40px; }
+      .h-brand-name { display: none; }
+      .s-search { width: 150px; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header id="header">
+    <div class="h-brand">
+      <div class="h-brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/>
+          <path d="M14 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/>
+          <path d="M4 15a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/>
+          <path d="M14 15a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/>
+        </svg>
+      </div>
+      <span class="h-brand-name">ARL Power Directory</span>
+    </div>
+    <div class="h-center">
+      <div class="h-logo">
+        <!--
+          LOGO: Replace the src below with your logo path.
+          If hosting on GitHub Pages, add your logo as "logo.png"
+          in the same folder as index.html and use: src="./logo.png"
+        -->
+        <img src="./logo.png" alt="ARL Network" onerror="this.style.display='none'" />
+      </div>
+    </div>
+    <div class="h-right">
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="i-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════ BODY ROW ══════════ -->
+  <div id="body-row">
+
+    <!-- ── SIDEBAR ── -->
+    <aside id="sidebar">
+      <div class="sb-top">
+        <button class="sb-back hidden" id="back-btn" onclick="goToDirectory()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Directory
+        </button>
+        <div class="sb-section-lbl">DEPARTMENTS</div>
+        <nav class="sb-nav" id="sb-nav"></nav>
+      </div>
+      <div class="sb-bottom">
+        <div class="user-chip">
+          <div class="user-avatar">AM</div>
+          <span class="user-name">Anderson Marquez</span>
+        </div>
+        <button class="settings-btn" onclick="goToSettings()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main id="main">
+
+      <!-- PAGE: DIRECTORY -->
+      <div id="page-directory">
+        <div class="hero">
+          <div class="hero-tag"><span class="hero-dot"></span>ARL Network</div>
+          <h1>Power Directory</h1>
+          <p>Your central hub for Power Apps and Power BI dashboards. Click any card to launch a resource.</p>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" id="dir-search" type="search" placeholder="Search apps and dashboards…" oninput="renderDirectory()" />
+          </div>
+          <div class="filter-pills">
+            <button class="pill active" onclick="setFilter('all', this)">All</button>
+            <button class="pill"        onclick="setFilter('app', this)"><span class="pill-dot" style="color:var(--app-c)"></span>Power Apps</button>
+            <button class="pill pill-bi" onclick="setFilter('bi',  this)"><span class="pill-dot" style="color:var(--bi-c)"></span>Power BI</button>
+          </div>
+        </div>
+        <div class="stats-row" id="dir-stats"></div>
+        <div id="dir-cards"></div>
+      </div>
+
+      <!-- PAGE: SETTINGS -->
+      <div id="page-settings" style="display:none">
+        <div class="sett-heading">
+          <h1>Settings</h1>
+          <p>Manage your resources and departments</p>
+        </div>
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tab-btn-resources"    onclick="switchTab('resources')">Manage Resources</button>
+          <button class="tab-btn"        id="tab-btn-departments"  onclick="switchTab('departments')">Manage Departments</button>
+        </div>
+
+        <!-- Resources tab -->
+        <div id="tab-resources">
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Resources</span>
+              <div class="panel-actions">
+                <input class="s-search" id="sett-search" type="search" placeholder="Search by name or department…" oninput="renderSettingsResources()" />
+                <button class="btn-add" onclick="openResourceModal(null)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add Resource
+                </button>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <div class="tbl-head cols-res">
+                <span>RESOURCE NAME</span><span>TYPE</span><span>DEPARTMENT</span><span style="text-align:right">ACTIONS</span>
+              </div>
+              <div id="sett-res-rows"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Departments tab -->
+        <div id="tab-departments" style="display:none">
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Departments</span>
+              <div class="panel-actions">
+                <button class="btn-add" onclick="openDeptModal(null)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add Department
+                </button>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <div class="tbl-head cols-dept">
+                <span>DEPARTMENT NAME</span><span>RESOURCES</span><span style="text-align:right">ACTIONS</span>
+              </div>
+              <div id="sett-dept-rows"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: ADD / EDIT RESOURCE ══════════ -->
+<div class="overlay" id="modal-resource">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="modal-resource-title">Add Resource</span>
+      <button class="modal-close" onclick="closeModal('modal-resource')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="res-edit-id" />
+      <div class="form-group">
+        <label class="form-label">Resource Name<span class="req">*</span></label>
+        <input  class="form-control" id="res-name" placeholder="e.g. Claims Portal" />
+        <div class="form-error" id="err-res-name"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description<span class="req">*</span></label>
+        <textarea class="form-control" id="res-desc" rows="3" placeholder="Short description of this resource…"></textarea>
+        <div class="form-error" id="err-res-desc"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Launch URL<span class="req">*</span></label>
+        <input  class="form-control" id="res-url" type="url" placeholder="https://apps.powerapps.com/…" />
+        <div class="form-error" id="err-res-url"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Department<span class="req">*</span></label>
+        <select class="form-control" id="res-dept">
+          <option value="">Select a department</option>
+        </select>
+        <div class="form-error" id="err-res-dept"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Resource Type<span class="req">*</span></label>
+        <select class="form-control" id="res-type">
+          <option value="app">Power App</option>
+          <option value="bi">Power BI Dashboard</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-resource')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancel
+      </button>
+      <button class="btn-save" onclick="saveResource()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: ADD / EDIT DEPARTMENT ══════════ -->
+<div class="overlay" id="modal-dept">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <span class="modal-title" id="modal-dept-title">Add Department</span>
+      <button class="modal-close" onclick="closeModal('modal-dept')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="dept-edit-name" />
+      <div class="form-group">
+        <label class="form-label">Department Name<span class="req">*</span></label>
+        <input  class="form-control" id="dept-name" placeholder="e.g. Operations" />
+        <div class="form-error" id="err-dept-name"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-dept')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancel
+      </button>
+      <button class="btn-save" onclick="saveDepartment()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: CONFIRM DELETE ══════════ -->
+<div class="overlay" id="modal-confirm">
+  <div class="modal modal-sm">
+    <div class="confirm-body">
+      <div class="confirm-title" id="confirm-title">Delete</div>
+      <div class="confirm-text"  id="confirm-text">Are you sure?</div>
+    </div>
+    <div class="confirm-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-confirm')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancel
+      </button>
+      <button class="btn-delete" id="confirm-delete-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   STORAGE & DEFAULT DATA
+═══════════════════════════════════════ */
+const STORE_KEY = 'arl-directory-v3';
+const THEME_KEY = 'arl-theme';
+
+const DEFAULT_DATA = {
+  departments: ['Agent Support', 'Claims', 'IBE Services', 'Retention', 'Safety'],
+  resources: [
+    {
+      id: 'r1',
+      name: 'Claims Portal',
+      type: 'app',
+      department: 'Claims',
+      description: 'A fleet management tool that scores and tracks driver risk across terminals using Dataverse. It features a live dashboard, driver risk management table, and automated Power Automate flows for adding/removing drivers with email notifications.',
+      url: 'https://apps.powerapps.com/play/e/13d0c708-c288-e332-bd6f-045f01674814/app/576415e0-d17d-497c-be14-69d531e71ef9?tenantId=1ab993e6-5837-45e4-a231-6466807ddb34&sourcehint=1&hint=0f7f5dfd-0a30-4e8e-9ce9-4ffa5ea72878&sourcetime=1774324423692&source=portal'
+    },
+    {
+      id: 'r2',
+      name: 'Safety Portal',
+      type: 'app',
+      department: 'Safety',
+      description: 'A centralized system designed to streamline driver safety and compliance management across your organization. Empowers safety teams to monitor, report, and stay ahead of regulatory requirements — all in one place.',
+      url: 'https://apps.powerapps.com/play/e/default-1ab993e6-5837-45e4-a231-6466807ddb34/a/851e96d4-d51b-4e53-8a56-13c990bfacec?tenantId=1ab993e6-5837-45e4-a231-6466807ddb34&hint=ddc4ab67-6629-4c06-ba49-044c52ff996d&sourcetime=1755571480753&hidenavbar=true'
+    },
+    {
+      id: 'r3',
+      name: 'DIX – Driver Integration App',
+      type: 'app',
+      department: 'IBE Services',
+      description: 'A comprehensive system that centralizes the onboarding process for new hires, trucks, and trailers from start to finish. Streamlines data entry, document management, and cross-platform workflows — reducing manual work and keeping every onboarding step organized in one place.',
+      url: 'https://apps.powerapps.com/play/e/default-1ab993e6-5837-45e4-a231-6466807ddb34/a/a0ffe097-b2a4-4186-95e8-e87fd5cbf71f?tenantId=1ab993e6-5837-45e4-a231-6466807ddb34&hint=f5d92cae-1e0d-40cf-a205-6182970e67ef&source=sharebutton&sourcetime=1742772860301&hidenavbar=true'
+    },
+    {
+      id: 'r4',
+      name: 'Agent Support App',
+      type: 'app',
+      department: 'Agent Support',
+      description: 'A system designed to capture new agent data and automatically generate the appropriate onboarding documentation with ease. Simplifies the first onboarding experience by eliminating manual paperwork and ensuring every new agent is set up correctly from day one.',
+      url: 'https://apps.powerapps.com/play/e/default-1ab993e6-5837-45e4-a231-6466807ddb34/a/79bb0114-2173-49dd-9b59-c22b8971653f?tenantId=1ab993e6-5837-45e4-a231-6466807ddb34&hint=43c7e480-0e73-4be5-ab83-912a2f2befce&sourcetime=1771606982983&hidenavbar=true'
+    },
+    {
+      id: 'r5',
+      name: 'SOAP Driver Retention App',
+      type: 'app',
+      department: 'Retention',
+      description: 'A system built to proactively manage driver relationships through regular check-in follow-ups, ensuring current drivers remain engaged and supported within the organization. Also facilitates structured exit interviews for cancelled drivers, providing valuable insights to improve retention over time.',
+      url: 'https://apps.powerapps.com/play/e/13d0c708-c288-e332-bd6f-045f01674814/app/35865ea0-457c-462c-ab88-7079b90874af?tenantId=1ab993e6-5837-45e4-a231-6466807ddb34&sourcehint=1&hint=ba80e955-1aa7-4c50-8a1c-8736046091c6&sourcetime=1773548214383&source=portal'
+    }
+  ]
+};
+
+function loadData() {
+  try {
+    const stored = localStorage.getItem(STORE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch (e) { /* ignore */ }
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function saveData() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+function makeId() {
+  return 'res_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+}
+
+/* ═══════════════════════════════════════
+   APP STATE
+═══════════════════════════════════════ */
+let data           = loadData();
+let currentPage    = 'directory';  /* 'directory' | 'settings' */
+let currentTab     = 'resources';  /* 'resources' | 'departments' */
+let selectedDept   = null;         /* null = All, string = dept name */
+let activeFilter   = 'all';        /* 'all' | 'app' | 'bi' */
+
+/* ═══════════════════════════════════════
+   SVG ICONS (reusable snippets)
+═══════════════════════════════════════ */
+const SVG = {
+  app: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  bi:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+  dept:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  all: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  ext: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  edit:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  del: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+};
+
+/* ═══════════════════════════════════════
+   PAGE NAVIGATION
+═══════════════════════════════════════ */
+function goToDirectory() {
+  currentPage = 'directory';
+  document.getElementById('page-directory').style.display = 'block';
+  document.getElementById('page-settings').style.display  = 'none';
+  document.getElementById('back-btn').classList.add('hidden');
+  renderSidebar();
+  renderDirectory();
+}
+
+function goToSettings() {
+  currentPage = 'settings';
+  document.getElementById('page-directory').style.display = 'none';
+  document.getElementById('page-settings').style.display  = 'block';
+  document.getElementById('back-btn').classList.remove('hidden');
+  renderSidebar();
+  renderSettingsResources();
+  renderSettingsDepartments();
+}
+
+/* ═══════════════════════════════════════
+   TAB SWITCHING (Settings)
+═══════════════════════════════════════ */
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-resources').style.display    = tab === 'resources'    ? 'block' : 'none';
+  document.getElementById('tab-departments').style.display  = tab === 'departments'  ? 'block' : 'none';
+  document.getElementById('tab-btn-resources').classList.toggle('active',   tab === 'resources');
+  document.getElementById('tab-btn-departments').classList.toggle('active', tab === 'departments');
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
+function renderSidebar() {
+  const counts = {};
+  data.resources.forEach(r => {
+    counts[r.department] = (counts[r.department] || 0) + 1;
+  });
+
+  const depts = [...new Set(data.resources.map(r => r.department))].sort();
+  const nav = document.getElementById('sb-nav');
+
+  if (currentPage === 'settings') {
+    /* In settings: show dept list as static labels */
+    nav.innerHTML = depts.map(d => `
+      <div class="nav-item">
+        ${SVG.dept} ${d}
+        <span class="nav-badge">${counts[d] || 0}</span>
+      </div>`).join('');
+    return;
+  }
+
+  /* Directory: clickable dept filters */
+  const allActive = selectedDept === null ? 'active' : '';
+  nav.innerHTML = `
+    <button class="nav-item ${allActive}" onclick="selectDept(null)">
+      ${SVG.all} All Departments
+      <span class="nav-badge">${data.resources.length}</span>
+    </button>
+    ${depts.map(d => {
+      const active = selectedDept === d ? 'active' : '';
+      const safe   = d.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return `<button class="nav-item ${active}" onclick="selectDept('${safe}')">
+        ${SVG.dept} ${d}
+        <span class="nav-badge">${counts[d] || 0}</span>
+      </button>`;
+    }).join('')}`;
+}
+
+function selectDept(dept) {
+  selectedDept = dept;
+  renderSidebar();
+  renderDirectory();
+}
+
+/* ═══════════════════════════════════════
+   DIRECTORY PAGE
+═══════════════════════════════════════ */
+function setFilter(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  renderDirectory();
+}
+
+function renderDirectory() {
+  const query = (document.getElementById('dir-search')?.value || '').toLowerCase().trim();
+
+  const filtered = data.resources.filter(r => {
+    const matchDept   = !selectedDept  || r.department === selectedDept;
+    const matchType   = activeFilter === 'all' || r.type === activeFilter;
+    const matchSearch = !query
+      || r.name.toLowerCase().includes(query)
+      || r.description.toLowerCase().includes(query)
+      || r.department.toLowerCase().includes(query);
+    return matchDept && matchType && matchSearch;
+  });
+
+  /* Stats bar */
+  const appCount = filtered.filter(r => r.type === 'app').length;
+  const biCount  = filtered.filter(r => r.type === 'bi').length;
+  document.getElementById('dir-stats').innerHTML = `
+    <span class="stat-chip"><span class="stat-num">${filtered.length}</span>&nbsp;resources</span>
+    <span class="stat-sep"></span>
+    <span class="stat-chip" style="color:var(--app-c)"><span class="stat-num">${appCount}</span>&nbsp;Apps</span>
+    ${biCount > 0 ? `<span class="stat-sep"></span><span class="stat-chip" style="color:var(--bi-c)"><span class="stat-num">${biCount}</span>&nbsp;Dashboards</span>` : ''}
+  `;
+
+  const container = document.getElementById('dir-cards');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="card-grid">
+        <div class="empty-state">
+          <div class="empty-icon">${SVG.app}</div>
+          <div class="empty-title">No matching resources</div>
+          <div class="empty-text">Try adjusting your search or filters.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  /* Group by department */
+  const groups = {};
+  filtered.forEach(r => {
+    if (!groups[r.department]) groups[r.department] = [];
+    groups[r.department].push(r);
+  });
+
+  container.innerHTML = Object.keys(groups).sort().map(dept => `
+    <div class="dept-section">
+      <div class="dept-header">
+        <span class="dept-label">${dept}</span>
+        <div class="dept-line"></div>
+        <span class="dept-count">${groups[dept].length}</span>
+      </div>
+      <div class="card-grid">
+        ${groups[dept].map((r, i) => buildCard(r, i)).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function buildCard(r, index) {
+  const typeLabel = r.type === 'app' ? 'Power App' : 'Power BI';
+  const safeUrl   = r.url.replace(/"/g, '&quot;');
+  return `
+    <a class="res-card type-${r.type}" href="${safeUrl}" target="_blank" rel="noopener noreferrer"
+       style="animation-delay: ${index * 0.04}s">
+      <div class="card-head">
+        <div class="card-icon type-${r.type}">${SVG[r.type]}</div>
+        <span class="card-badge badge-${r.type}">${SVG[r.type]} ${typeLabel}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${r.name}</div>
+        <div class="card-desc">${r.description}</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-dept">${SVG.dept}<span>${r.department}</span></div>
+        <span class="open-btn type-${r.type}" onclick="event.stopPropagation()">
+          Open ${SVG.ext}
+        </span>
+      </div>
+    </a>`;
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS — RESOURCES TABLE
+═══════════════════════════════════════ */
+function renderSettingsResources() {
+  const query = (document.getElementById('sett-search')?.value || '').toLowerCase().trim();
+  const rows  = data.resources.filter(r =>
+    !query || r.name.toLowerCase().includes(query) || r.department.toLowerCase().includes(query)
+  );
+
+  const el = document.getElementById('sett-res-rows');
+  if (!rows.length) {
+    el.innerHTML = `
+      <div class="empty-state" style="padding:48px">
+        <div class="empty-icon">${SVG.app}</div>
+        <div class="empty-title">No resources found</div>
+        <div class="empty-text">Add your first Power App or Power BI resource to get started.</div>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = rows.map(r => {
+    const typeLabel = r.type === 'app' ? 'Power App' : 'Power BI';
+    const safeId    = r.id.replace(/'/g, "\\'");
+    const safeName  = r.name.replace(/'/g, "\\'");
+    const shortUrl  = r.url.length > 50 ? r.url.slice(0, 50) + '…' : r.url;
+    return `
+      <div class="tbl-row cols-res">
+        <div class="cell-name">
+          <div class="cell-icon type-${r.type}">${SVG[r.type]}</div>
+          <div class="cell-text">
+            <strong>${r.name}</strong>
+            <div class="cell-url">
+              <a href="${r.url}" target="_blank" rel="noopener noreferrer">
+                ${SVG.ext} ${shortUrl}
+              </a>
+            </div>
+          </div>
+        </div>
+        <div><span class="type-pill type-${r.type}">${typeLabel}</span></div>
+        <div style="font-size:13px;color:var(--fg-2)">${r.department}</div>
+        <div class="row-actions">
+          <button class="icon-btn" onclick="openResourceModal('${safeId}')" title="Edit">${SVG.edit}</button>
+          <button class="icon-btn del" onclick="confirmDelete('resource', '${safeId}', '${safeName}')" title="Delete">${SVG.del}</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS — DEPARTMENTS TABLE
+═══════════════════════════════════════ */
+function renderSettingsDepartments() {
+  const counts = {};
+  data.resources.forEach(r => {
+    counts[r.department] = (counts[r.department] || 0) + 1;
+  });
+
+  const el = document.getElementById('sett-dept-rows');
+  if (!data.departments.length) {
+    el.innerHTML = `
+      <div class="empty-state" style="padding:48px">
+        <div class="empty-icon">${SVG.dept}</div>
+        <div class="empty-title">No departments yet</div>
+        <div class="empty-text">Add departments to organize your resources.</div>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = data.departments.map(d => {
+    const cnt      = counts[d] || 0;
+    const safeName = d.replace(/'/g, "\\'");
+    return `
+      <div class="tbl-row cols-dept">
+        <div class="dept-chip">
+          <div class="dept-chip-icon">${SVG.dept}</div>
+          <span style="font-weight:600;font-size:13.5px">${d}</span>
+        </div>
+        <div>
+          <span class="count-pill">${cnt} ${cnt === 1 ? 'resource' : 'resources'}</span>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn" onclick="openDeptModal('${safeName}')" title="Edit">${SVG.edit}</button>
+          <button class="icon-btn del" onclick="confirmDelete('department', null, '${safeName}')" title="Delete">${SVG.del}</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   RESOURCE MODAL — OPEN / SAVE
+═══════════════════════════════════════ */
+function openResourceModal(id) {
+  const res = id ? data.resources.find(r => r.id === id) : null;
+
+  document.getElementById('modal-resource-title').textContent = res ? 'Edit Resource' : 'Add Resource';
+  document.getElementById('res-edit-id').value = res ? res.id   : '';
+  document.getElementById('res-name').value    = res ? res.name : '';
+  document.getElementById('res-desc').value    = res ? res.description : '';
+  document.getElementById('res-url').value     = res ? res.url  : '';
+  document.getElementById('res-type').value    = res ? res.type : 'app';
+
+  /* Populate department dropdown */
+  const deptSelect = document.getElementById('res-dept');
+  deptSelect.innerHTML = '<option value="">Select a department</option>' +
+    data.departments.map(d =>
+      `<option value="${d}" ${res && res.department === d ? 'selected' : ''}>${d}</option>`
+    ).join('');
+
+  /* Clear validation */
+  ['res-name', 'res-desc', 'res-url', 'res-dept'].forEach(field => {
+    document.getElementById(field).classList.remove('invalid');
+    document.getElementById('err-' + field).textContent = '';
+  });
+
+  openModal('modal-resource');
+}
+
+function saveResource() {
+  /* Validate */
+  const rules = [
+    { field: 'res-name', label: 'Resource name is required.' },
+    { field: 'res-desc', label: 'Description is required.' },
+    { field: 'res-url',  label: 'Launch URL is required.' },
+    { field: 'res-dept', label: 'Please select a department.' },
+  ];
+  let valid = true;
+  rules.forEach(({ field, label }) => {
+    const el  = document.getElementById(field);
+    const err = document.getElementById('err-' + field);
+    if (!el.value.trim()) {
+      el.classList.add('invalid');
+      err.textContent = label;
+      valid = false;
+    } else {
+      el.classList.remove('invalid');
+      err.textContent = '';
+    }
+  });
+  if (!valid) return;
+
+  const editId = document.getElementById('res-edit-id').value;
+  const payload = {
+    name:        document.getElementById('res-name').value.trim(),
+    description: document.getElementById('res-desc').value.trim(),
+    url:         document.getElementById('res-url').value.trim(),
+    department:  document.getElementById('res-dept').value,
+    type:        document.getElementById('res-type').value,
+  };
+
+  if (editId) {
+    /* Update existing */
+    const idx = data.resources.findIndex(r => r.id === editId);
+    if (idx !== -1) data.resources[idx] = { ...data.resources[idx], ...payload };
+  } else {
+    /* Create new */
+    data.resources.push({ id: makeId(), ...payload });
+  }
+
+  saveData();
+  closeModal('modal-resource');
+  renderSettingsResources();
+  renderSidebar();
+}
+
+/* ═══════════════════════════════════════
+   DEPARTMENT MODAL — OPEN / SAVE
+═══════════════════════════════════════ */
+function openDeptModal(existingName) {
+  document.getElementById('modal-dept-title').textContent = existingName ? 'Edit Department' : 'Add Department';
+  document.getElementById('dept-edit-name').value = existingName || '';
+  document.getElementById('dept-name').value       = existingName || '';
+  document.getElementById('dept-name').classList.remove('invalid');
+  document.getElementById('err-dept-name').textContent = '';
+  openModal('modal-dept');
+  setTimeout(() => document.getElementById('dept-name').focus(), 80);
+}
+
+function saveDepartment() {
+  const nameEl   = document.getElementById('dept-name');
+  const errEl    = document.getElementById('err-dept-name');
+  const newName  = nameEl.value.trim();
+  const oldName  = document.getElementById('dept-edit-name').value;
+
+  if (!newName) {
+    nameEl.classList.add('invalid');
+    errEl.textContent = 'Department name is required.';
+    return;
+  }
+  if (data.departments.includes(newName) && newName !== oldName) {
+    nameEl.classList.add('invalid');
+    errEl.textContent = 'A department with this name already exists.';
+    return;
+  }
+
+  if (oldName) {
+    /* Rename */
+    const idx = data.departments.indexOf(oldName);
+    if (idx !== -1) data.departments[idx] = newName;
+    data.resources.forEach(r => { if (r.department === oldName) r.department = newName; });
+  } else {
+    /* Add */
+    data.departments.push(newName);
+    data.departments.sort();
+  }
+
+  saveData();
+  closeModal('modal-dept');
+  renderSettingsDepartments();
+  renderSidebar();
+}
+
+/* ═══════════════════════════════════════
+   CONFIRM DELETE
+═══════════════════════════════════════ */
+function confirmDelete(kind, id, name) {
+  const linkedCount = kind === 'department'
+    ? data.resources.filter(r => r.department === name).length
+    : 0;
+
+  const blocked = kind === 'department' && linkedCount > 0;
+
+  document.getElementById('confirm-title').textContent = blocked
+    ? 'Cannot Delete Department'
+    : (kind === 'resource' ? 'Delete Resource' : 'Delete Department');
+
+  document.getElementById('confirm-text').innerHTML = blocked
+    ? `"${name}" has <strong>${linkedCount} ${linkedCount === 1 ? 'resource' : 'resources'}</strong> linked to it.<br>Please reassign or delete those resources first.`
+    : `Are you sure you want to delete <strong>"${name}"</strong>?<br>This action cannot be undone.`;
+
+  const deleteBtn = document.getElementById('confirm-delete-btn');
+  deleteBtn.style.display = blocked ? 'none' : '';
+
+  if (!blocked) {
+    deleteBtn.onclick = () => {
+      if (kind === 'resource') {
+        data.resources = data.resources.filter(r => r.id !== id);
+      } else {
+        data.departments = data.departments.filter(d => d !== name);
+      }
+      saveData();
+      closeModal('modal-confirm');
+      renderSettingsResources();
+      renderSettingsDepartments();
+      renderSidebar();
+    };
+  }
+
+  openModal('modal-confirm');
+}
+
+/* ═══════════════════════════════════════
+   MODAL OPEN / CLOSE
+═══════════════════════════════════════ */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/* Close when clicking the backdrop */
+document.querySelectorAll('.overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+/* Close with Escape key */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
+  }
+});
+
+/* ═══════════════════════════════════════
+   THEME TOGGLE
+═══════════════════════════════════════ */
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next    = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(THEME_KEY, next);
+}
+
+/* Init theme from localStorage or system preference */
+(function initTheme() {
+  const saved    = localStorage.getItem(THEME_KEY);
+  const sysDark  = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme    = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
+renderSidebar();
+renderDirectory();
+</script>
+</body>
+</html>
