@@ -30,6 +30,9 @@
       --bi-c:        #d97706;
       --bi-bg:       #fffbeb;
       --bi-bd:       #fde68a;
+      --gh-c:        #1f2328;
+      --gh-bg:       #f0f0f0;
+      --gh-bd:       #d0d7de;
       --red:         #dc2626;
       --red-lt:      #fef2f2;
       --shadow-sm:   0 1px 3px rgba(0,0,0,.07);
@@ -60,6 +63,9 @@
       --bi-c:        #fbbf24;
       --bi-bg:       rgba(251,191,36,.08);
       --bi-bd:       rgba(251,191,36,.25);
+      --gh-c:        #e6edf3;
+      --gh-bg:       rgba(230,237,243,.08);
+      --gh-bd:       rgba(230,237,243,.2);
       --red:         #f87171;
       --red-lt:      rgba(248,113,113,.1);
       --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
@@ -237,6 +243,7 @@
     .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .pill.active:hover { background: var(--primary-hv); border-color: var(--primary-hv); }
     .pill.pill-bi.active { background: var(--bi-c); border-color: var(--bi-c); }
+    .pill.pill-gh.active { background: var(--gh-c); border-color: var(--gh-c); }
     .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .75; }
 
     .stats-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 12.5px; animation: fadeUp .4s .08s ease both; }
@@ -269,16 +276,20 @@
     .res-card.type-app:hover { border-color: var(--app-bd); }
     .res-card.type-bi  { --card-accent: var(--bi-c);  }
     .res-card.type-bi:hover  { border-color: var(--bi-bd);  }
+    .res-card.type-gh  { --card-accent: var(--gh-c);  }
+    .res-card.type-gh:hover  { border-color: var(--gh-bd);  }
 
     .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
     .card-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .card-icon.type-app { background: var(--app-bg); border: 1px solid var(--app-bd); color: var(--app-c); }
     .card-icon.type-bi  { background: var(--bi-bg);  border: 1px solid var(--bi-bd);  color: var(--bi-c);  }
+    .card-icon.type-gh  { background: var(--gh-bg);  border: 1px solid var(--gh-bd);  color: var(--gh-c);  }
     .card-icon svg { width: 18px; height: 18px; }
     .card-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; flex-shrink: 0; }
     .card-badge svg { width: 9px; height: 9px; }
     .badge-app { background: var(--app-bg); color: var(--app-c); border: 1px solid var(--app-bd); }
     .badge-bi  { background: var(--bi-bg);  color: var(--bi-c);  border: 1px solid var(--bi-bd);  }
+    .badge-gh  { background: var(--gh-bg);  color: var(--gh-c);  border: 1px solid var(--gh-bd);  }
     .card-body { flex: 1; }
     .card-name { font-size: 14px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; margin-bottom: 4px; }
     .card-desc { font-size: 12px; color: var(--fg-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -296,6 +307,8 @@
     .open-btn.type-app:hover { background: var(--app-c); color: #fff; }
     .open-btn.type-bi  { background: var(--bi-bg);  color: var(--bi-c);  border-color: var(--bi-bd);  }
     .open-btn.type-bi:hover  { background: var(--bi-c);  color: #fff; }
+    .open-btn.type-gh  { background: var(--gh-bg);  color: var(--gh-c);  border-color: var(--gh-bd);  }
+    .open-btn.type-gh:hover  { background: var(--gh-c);  color: #fff; }
     .open-btn svg { width: 10px; height: 10px; }
 
     .empty-state { grid-column: 1/-1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
@@ -361,6 +374,7 @@
     .cell-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .cell-icon.type-app { background: var(--app-bg); color: var(--app-c); }
     .cell-icon.type-bi  { background: var(--bi-bg);  color: var(--bi-c);  }
+    .cell-icon.type-gh  { background: var(--gh-bg);  color: var(--gh-c);  }
     .cell-icon svg { width: 16px; height: 16px; }
     .cell-text { min-width: 0; }
     .cell-text strong { display: block; font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -372,6 +386,7 @@
     .type-pill { display: inline-flex; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; }
     .type-pill.type-app { background: var(--app-bg); color: var(--app-c); border: 1px solid var(--app-bd); }
     .type-pill.type-bi  { background: var(--bi-bg);  color: var(--bi-c);  border: 1px solid var(--bi-bd);  }
+    .type-pill.type-gh  { background: var(--gh-bg);  color: var(--gh-c);  border: 1px solid var(--gh-bd);  }
 
     .dept-chip { display: flex; align-items: center; gap: 8px; }
     .dept-chip-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--primary-lt); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -480,7 +495,7 @@
           If hosting on GitHub Pages, add your logo as "logo.png"
           in the same folder as index.html and use: src="./logo.png"
         -->
-        <img src="./arlnetwork-logo.png" alt="ARL Network" onerror="this.style.display='none'" />
+        <img src="./logo.png" alt="ARL Network" onerror="this.style.display='none'" />
       </div>
     </div>
     <div class="h-right">
@@ -524,7 +539,7 @@
         <div class="hero">
           <div class="hero-tag"><span class="hero-dot"></span>ARL Network</div>
           <h1>Power Directory</h1>
-          <p>Your central hub for Power Apps and Power BI dashboards. Click any card to launch a resource.</p>
+          <p>Your central hub for Power Apps, Power BI dashboards, and GitHub repositories. Click any card to launch a resource.</p>
         </div>
         <div class="toolbar">
           <div class="search-wrap">
@@ -535,6 +550,7 @@
             <button class="pill active" onclick="setFilter('all', this)">All</button>
             <button class="pill"        onclick="setFilter('app', this)"><span class="pill-dot" style="color:var(--app-c)"></span>Power Apps</button>
             <button class="pill pill-bi" onclick="setFilter('bi',  this)"><span class="pill-dot" style="color:var(--bi-c)"></span>Power BI</button>
+            <button class="pill pill-gh" onclick="setFilter('gh',  this)"><span class="pill-dot" style="color:var(--gh-c)"></span>GitHub</button>
           </div>
         </div>
         <div class="stats-row" id="dir-stats"></div>
@@ -638,6 +654,7 @@
         <select class="form-control" id="res-type">
           <option value="app">Power App</option>
           <option value="bi">Power BI Dashboard</option>
+          <option value="gh">GitHub Repository</option>
         </select>
       </div>
     </div>
@@ -790,6 +807,7 @@ const SVG = {
   ext: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
   edit:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
   del: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+  gh:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>`,
 };
 
 /* ═══════════════════════════════════════
@@ -834,7 +852,7 @@ function renderSidebar() {
     counts[r.department] = (counts[r.department] || 0) + 1;
   });
 
-  const depts = [...new Set(data.resources.map(r => r.department))].sort();
+  const depts = [...data.departments].sort();
   const nav = document.getElementById('sb-nav');
 
   if (currentPage === 'settings') {
@@ -896,11 +914,13 @@ function renderDirectory() {
   /* Stats bar */
   const appCount = filtered.filter(r => r.type === 'app').length;
   const biCount  = filtered.filter(r => r.type === 'bi').length;
+  const ghCount  = filtered.filter(r => r.type === 'gh').length;
   document.getElementById('dir-stats').innerHTML = `
     <span class="stat-chip"><span class="stat-num">${filtered.length}</span>&nbsp;resources</span>
     <span class="stat-sep"></span>
     <span class="stat-chip" style="color:var(--app-c)"><span class="stat-num">${appCount}</span>&nbsp;Apps</span>
     ${biCount > 0 ? `<span class="stat-sep"></span><span class="stat-chip" style="color:var(--bi-c)"><span class="stat-num">${biCount}</span>&nbsp;Dashboards</span>` : ''}
+    ${ghCount > 0 ? `<span class="stat-sep"></span><span class="stat-chip" style="color:var(--gh-c)"><span class="stat-num">${ghCount}</span>&nbsp;Repos</span>` : ''}
   `;
 
   const container = document.getElementById('dir-cards');
@@ -938,14 +958,15 @@ function renderDirectory() {
 }
 
 function buildCard(r, index) {
-  const typeLabel = r.type === 'app' ? 'Power App' : 'Power BI';
+  const typeLabel = r.type === 'app' ? 'Power App' : r.type === 'bi' ? 'Power BI' : 'GitHub';
+  const typeIcon  = SVG[r.type];
   const safeUrl   = r.url.replace(/"/g, '&quot;');
   return `
     <a class="res-card type-${r.type}" href="${safeUrl}" target="_blank" rel="noopener noreferrer"
        style="animation-delay: ${index * 0.04}s">
       <div class="card-head">
-        <div class="card-icon type-${r.type}">${SVG[r.type]}</div>
-        <span class="card-badge badge-${r.type}">${SVG[r.type]} ${typeLabel}</span>
+        <div class="card-icon type-${r.type}">${typeIcon}</div>
+        <span class="card-badge badge-${r.type}">${typeIcon} ${typeLabel}</span>
       </div>
       <div class="card-body">
         <div class="card-name">${r.name}</div>
@@ -975,20 +996,21 @@ function renderSettingsResources() {
       <div class="empty-state" style="padding:48px">
         <div class="empty-icon">${SVG.app}</div>
         <div class="empty-title">No resources found</div>
-        <div class="empty-text">Add your first Power App or Power BI resource to get started.</div>
+        <div class="empty-text">Add your first Power App, Power BI, or GitHub resource to get started.</div>
       </div>`;
     return;
   }
 
   el.innerHTML = rows.map(r => {
-    const typeLabel = r.type === 'app' ? 'Power App' : 'Power BI';
+    const typeLabel = r.type === 'app' ? 'Power App' : r.type === 'bi' ? 'Power BI' : 'GitHub';
+    const typeIcon  = SVG[r.type];
     const safeId    = r.id.replace(/'/g, "\\'");
     const safeName  = r.name.replace(/'/g, "\\'");
     const shortUrl  = r.url.length > 50 ? r.url.slice(0, 50) + '…' : r.url;
     return `
       <div class="tbl-row cols-res">
         <div class="cell-name">
-          <div class="cell-icon type-${r.type}">${SVG[r.type]}</div>
+          <div class="cell-icon type-${r.type}">${typeIcon}</div>
           <div class="cell-text">
             <strong>${r.name}</strong>
             <div class="cell-url">
